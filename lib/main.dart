@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
+import 'package:my_first_app/database_helper.dart';
+import 'package:my_first_app/model.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -138,31 +140,36 @@ class NotesHomePage extends StatefulWidget {
 }
 
 class NotesHomePageState extends State<NotesHomePage> {
-  List<Note> notes =[];// by default empty
-  bool isloading = false;
+  List<Note> notes = []; // by default empty
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNotes();
+  }
 
   // Load Notes
-  Future<void> _loadNotes() async{
-    setState((){
+  Future<void> _loadNotes() async {
+    setState(() {
       isLoading = true;
     });
     notes = await DatabaseHelper.instance.getAllNotes();
-    setState((){
-      isLoading: false;
-    })
+    setState(() {
+      isLoading = false;
+    });
   }
 
   // Method to delete Notes
-  Future<void> _deleteNote(int id) async{
-    await DatabaseHelper.instance.deleteNotes(id);
+  Future<void> _deleteNote(int id) async {
+    await DatabaseHelper.instance.deleteNote(id);
     _loadNotes();
-    if(mounted){
+    if (mounted) {
       // Show successful deletion
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Note deleted successfully')),
       );
     }
-
   }
 
   @override
@@ -170,28 +177,118 @@ class NotesHomePageState extends State<NotesHomePage> {
     // first return function should always be scaffold.
     return Scaffold(
       appBar: AppBar(
-        title: Text("Notes App for Beginner!"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary
+        title: const Text("Notes App for Beginner!"),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: isLoading? const CircularProgreesIndicator():notes.isEmpty
-      ? Center(
-        child:Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-        children:[
-        Icon(Icons.note_add ,size:80,color: Colors.grey[400]),
-        const SizedBox(height: 16),
-        Text('No notes yet! \n Tap + to crete One!', textAligin :TextAlign.center,
-        style:TextStyle(fontSize:18 ,color: Colors.grey[600]),
-        ),
-      ],
-      ))
-      floatingActionButton:FloatingActionButton.extended(
-        onPressed: () async{
-          await Navigator.push(context ,MaterialPageRoute(builder: (context)=> Container()));
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : notes.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.note_add, size: 80, color: Colors.grey[400]),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No notes yet! \n Tap + to create One!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: notes.length,
+                  itemBuilder: (context, index) {
+                    final note = notes[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.deepPurple,
+                          child: Text(
+                            note.title.isNotEmpty ? note.title[0].toUpperCase() : '?',
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        title: Text(
+                          note.title,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 4),
+                            Text(
+                              note.content,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                          ],
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () async {
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => Container()),
+                                );
+                                _loadNotes();
+                              },
+                              icon: const Icon(Icons.edit, color: Colors.blue),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Delete Note'),
+                                    content: const Text(
+                                      'Are you sure you want to delete this note?',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          if (note.id != null) {
+                                            _deleteNote(note.id!);
+                                          }
+                                        },
+                                        child: const Text(
+                                          'Delete',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Container()),
+          );
         },
-        label:Text('Add note'),
-        icon: Icon(Icons.add),
+        label: const Text('Add note'),
+        icon: const Icon(Icons.add),
       ),
     );
   }
 }
+
