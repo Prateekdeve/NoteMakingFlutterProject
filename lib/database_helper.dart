@@ -45,7 +45,7 @@ class DatabaseHelper {
   // Create notes
   Future<Note> createNote(Note note) async {
     final db = await database;
-    final id = await db.insert('notes', note.ToMap());
+    final id = await db.insert('notes', note.toMap());
     return note.copyWith(id: id);
   }
 
@@ -73,7 +73,7 @@ class DatabaseHelper {
     final db = await database;
     return db.update(
       'notes',
-      note.ToMap(),
+      note.toMap(),
       where: 'id=?',
       whereArgs: [note.id],
     );

@@ -1,40 +1,53 @@
+// model class for Note
 
-class Note{
+class Note {
   final int? id;
-  final String title ;
+  final String title;
   final String content;
   final DateTime createdAt;
 
-  // class constructor
-  Note({this.id ,required this.title , required this.content, this.DateTime});
+  // constructor
+  Note({
+    this.id,
+    required this.title,
+    required this.content,
+    required this.createdAt,
+  });
 
-  // Convert note to map insertion
-  Map<String ,dynamic> ToMap(){
+  //convert Note to map for database insertion
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'title':title ,
-      'content' :content,
-      'cratedAt' : createdAt.toIso8601String()
-      
+      'title': title,
+      'content': content,
+      'createdAt': createdAt.toIso8601String(),
     };
   }
 
-  // Create note from map
-  factory Note.fromMap(Map<String,dynamic> map){
+  // create Note from Map
+  factory Note.fromMap(Map<String, dynamic> map) {
     return Note(
-      id: map['id'] as int ,
-      title : map['title'] as String ,
-      content : map['content'] as String,
-      createdAt : DateTime.parse(map['createdAt'] as String),
-    )
+      id: map['id'] as int,
+      title: map['title'] as String,
+      content: map['content'] as String,
+      createdAt: DateTime.parse(map['ceratedAt'] as String),
+    );
   }
+}
 
-  // Extension -> Creates copy with method for the note class -> Update the object value
-  extension NoteCopy on Note{
-    Note copyWith({int? id , String? title ,String? content ,DateTime? created}){
-      return Note(id : id?? this.id , title :title?? this.title, content: content?? this.content ,createdAt: createdAt?? this.createdAt);
-    }
+// Extension to update the object value
+extension NoteCopy on Note {
+  Note copyWith({
+    int? id,
+    String? title,
+    String? content,
+    DateTime? createdAt,
+  }) {
+    return Note(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      createdAt: createdAt ?? this.createdAt,
+    );
   }
-
-  Future<Note> copyWith({required int id}) async {}
 }

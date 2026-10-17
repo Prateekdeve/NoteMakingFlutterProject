@@ -122,3 +122,21 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+// Flutter - Building stateful Widgets.
+//   (Type stful shortcut)
+class NotesHomePage extends StatefulWidget {
+  const new({super.key});
+
+  @override
+  State<NotesHomePage> createState() => _NotesHomePageState();
+}
+
+class _NotesHomePageState extends State<NotesHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      
+    );
+  }
+}
