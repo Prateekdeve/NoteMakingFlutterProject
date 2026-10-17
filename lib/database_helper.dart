@@ -1,7 +1,6 @@
 import 'package:my_first_app/model.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite/sqlite_api.dart';
 
 // Database Helper Class
 
@@ -25,12 +24,12 @@ class DatabaseHelper {
     const textType = 'TEXT NOT NULL';
 
     await db.execute('''
-    Create Table notes{
-    id $idType,
-    title $textType,
-    content $textType,
-    createdAt $textType
-    }
+    CREATE TABLE notes (
+      id $idType,
+      title $textType,
+      content $textType,
+      createdAt $textType
+    )
     ''');
   }
 

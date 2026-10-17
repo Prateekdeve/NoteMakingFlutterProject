@@ -30,7 +30,7 @@ class Note {
       id: map['id'] as int,
       title: map['title'] as String,
       content: map['content'] as String,
-      createdAt: DateTime.parse(map['ceratedAt'] as String),
+      createdAt: DateTime.parse(map['createdAt'] as String),
     );
   }
 }

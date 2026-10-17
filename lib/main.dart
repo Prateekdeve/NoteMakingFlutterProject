@@ -1,8 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    databaseFactory = databaseFactoryFfiWeb;
+  }
   runApp(const MyApp());
 }
 
@@ -32,7 +37,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Page'),
+      home: const NotesHomePage(),
     );
   }
 }
@@ -126,17 +131,19 @@ class _MyHomePageState extends State<MyHomePage> {
 // Flutter - Building stateful Widgets.
 //   (Type stful shortcut)
 class NotesHomePage extends StatefulWidget {
-  const new({super.key});
+  const NotesHomePage({super.key});
 
   @override
-  State<NotesHomePage> createState() => _NotesHomePageState();
+  State<NotesHomePage> createState() => NotesHomePageState();
 }
 
-class _NotesHomePageState extends State<NotesHomePage> {
+class NotesHomePageState extends State<NotesHomePage> {
   @override
   Widget build(BuildContext context) {
+    // first return function should always be scaffold.
     return Scaffold(
-      
+      appBar: AppBar(),
+      body: Container(),
     );
   }
 }
