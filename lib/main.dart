@@ -173,7 +173,18 @@ class NotesHomePageState extends State<NotesHomePage> {
         title: Text("Notes App for Beginner!"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary
       ),
-      body: Container(),
+      body: isLoading? const CircularProgreesIndicator():notes.isEmpty
+      ? Center(
+        child:Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+        children:[
+        Icon(Icons.note_add ,size:80,color: Colors.grey[400]),
+        const SizedBox(height: 16),
+        Text('No notes yet! \n Tap + to crete One!', textAligin :TextAlign.center,
+        style:TextStyle(fontSize:18 ,color: Colors.grey[600]),
+        ),
+      ],
+      ))
       floatingActionButton:FloatingActionButton.extended(
         onPressed: () async{
           await Navigator.push(context ,MaterialPageRoute(builder: (context)=> Container()));
