@@ -1,6 +1,6 @@
 # my_first_app
 
-A new Flutter project.
+<h2> A new Flutter project for creating a notes app.</h2>
 
 ## Getting Started
 
