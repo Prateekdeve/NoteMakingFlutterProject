@@ -138,12 +138,49 @@ class NotesHomePage extends StatefulWidget {
 }
 
 class NotesHomePageState extends State<NotesHomePage> {
+  List<Note> notes =[];// by default empty
+  bool isloading = false;
+
+  // Load Notes
+  Future<void> _loadNotes() async{
+    setState((){
+      isLoading = true;
+    });
+    notes = await DatabaseHelper.instance.getAllNotes();
+    setState((){
+      isLoading: false;
+    })
+  }
+
+  // Method to delete Notes
+  Future<void> _deleteNote(int id) async{
+    await DatabaseHelper.instance.deleteNotes(id);
+    _loadNotes();
+    if(mounted){
+      // Show successful deletion
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Note deleted successfully')),
+      );
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     // first return function should always be scaffold.
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Notes App for Beginner!"),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary
+      ),
       body: Container(),
+      floatingActionButton:FloatingActionButton.extended(
+        onPressed: () async{
+          await Navigator.push(context ,MaterialPageRoute(builder: (context)=> Container()));
+        },
+        label:Text('Add note'),
+        icon: Icon(Icons.add),
+      ),
     );
   }
 }
