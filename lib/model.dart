@@ -35,4 +35,6 @@ class Note{
       return Note(id : id?? this.id , title :title?? this.title, content: content?? this.content ,createdAt: createdAt?? this.createdAt);
     }
   }
+
+  Future<Note> copyWith({required int id}) async {}
 }
